@@ -8,8 +8,7 @@ from typing import Any, Optional
 
 import redis.asyncio as redis
 
-from src.core.models import UserInDB
-
+from src.core.models import UserInDB, Plant
 
 redis_connection_pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
 
@@ -21,6 +20,8 @@ def redis_connection() -> redis.Redis:
 class Redis:
     REDIS_MODULE_CONFIG = "config"
     USERS = "users"
+    PLANTS = "plants"
+
     def __init__(self, **kwargs: Any):
         self.logger = logging.getLogger(Redis.__name__)
         self.redis = redis.Redis(**kwargs)
@@ -60,6 +61,9 @@ class Redis:
 
     async def set_user(self, user: UserInDB) -> None:
         await self.hset(self.USERS, user.id, user.model_dump_json())
+
+    async def set_plant(self, plant: Plant) -> None:
+        await self.hset(self.PLANTS, plant.id, plant.model_dump_json())
 
     """
     async def get_something(self) -> dict:

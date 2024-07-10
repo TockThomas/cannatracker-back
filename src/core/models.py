@@ -40,9 +40,17 @@ class TokenData(BaseModel):
 
 
 # Plant #
+class CreatePlant(BaseModel):
+    name: str
+    collaboration: List[User]
+    grow_stages: List[GrowStage]
+    start_date: datetime
+
+
 class Plant(BaseModel):
     id: str
     name: str
+    #owner: User
     collaboration: List[User]
     grow_stages: List[GrowStage]
     start_date: datetime
