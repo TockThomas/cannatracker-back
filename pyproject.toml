@@ -6,6 +6,7 @@ authors = ["Thomas <thomas.schleicher@fastad.de>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
+redis = "^5.0.7"
 python = "^3.11"
 fastapi = "^0.111.0"
 passlib = "^1.7.4"
