@@ -1,0 +1,23 @@
+services:
+  web:
+    image: tockthomas/cannatracker-back:latest
+    depends_on:
+      - redis
+    ports:
+      - "8000:8000"
+    networks:
+      - redis-network
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - redis-network
+    volumes:
+      - redis-volume:/data
+
+
+networks:
+  redis-network:
+
+volumes:
+  redis-volume:
