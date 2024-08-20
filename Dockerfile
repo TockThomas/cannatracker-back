@@ -18,5 +18,5 @@ ENV PATH="/app/.venv/bin:$PATH" \
 
 RUN pip install --no-cache-dir --upgrade "fastapi[standard]"
 
-EXPOSE 80
-CMD ["fastapi", "run", "src/main.py", "--port", "80"]
+EXPOSE 8000
+CMD ["fastapi", "run", "src/main.py", "--port", "8000"]

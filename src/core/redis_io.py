@@ -11,7 +11,8 @@ import redis.asyncio as redis
 from src.core.controller import user
 from src.core.models import UserInDB, Plant, PlantInDB, ScheduleTemplate, AbstractPlant
 
-redis_connection_pool = redis.ConnectionPool(host="localhost", port=6379, db=0)
+# redis_connection_pool = redis.ConnectionPool(host="localhost", port=6379, db=0)
+redis_connection_pool = redis.ConnectionPool(host="redis", port=6379, db=0)
 
 
 def redis_connection() -> redis.Redis:
