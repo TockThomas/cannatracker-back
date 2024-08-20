@@ -12,10 +12,10 @@ from pydantic.main import IncEx
 
 # User #
 class CreateUser(BaseModel):
-    email: str
     first_name: str
     last_name: str
     username: str
+    email: str
     password: str
 
 

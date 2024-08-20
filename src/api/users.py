@@ -19,9 +19,9 @@ async def login_for_access_token(
     return await UserController.login(db, form_data)
 
 
-@router.post("/signup", tags=["User"])
+@router.post("/register", tags=["User"])
 async def create_user(
-    form_data: Annotated[CreateUser, Depends()], db: Redis = Depends(redis_connection)
+    form_data: CreateUser, db: Redis = Depends(redis_connection)
 ) -> User:
     return await UserController.create_user(db, form_data)
 
