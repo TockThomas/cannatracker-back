@@ -5,15 +5,18 @@ from starlette.middleware.cors import CORSMiddleware
 from src.api import users, plants, templates
 app = FastAPI(title="CannaTracker")
 
-app.include_router(users.router)
-app.include_router(plants.router)
-app.include_router(templates.router)
+app.include_router(users.router, prefix="/api")
+app.include_router(plants.router, prefix="/api")
+app.include_router(templates.router, prefix="/api")
 
 
 # CORS
 origins = [
+    "http://localhost:3000",
     "http://localhost:5173",
-    "https://kind-grass-0c965211e.5.azurestaticapps.net"
+    "https://kind-grass-0c965211e.5.azurestaticapps.net",
+    "https://www.thegreenwizard.live",
+    "https://thegreenwizard.live"
 ]
 app.add_middleware(
     CORSMiddleware,

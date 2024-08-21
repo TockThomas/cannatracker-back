@@ -1,12 +1,18 @@
 services:
-  web:
-    image: tockthomas/cannatracker-back:latest
+  back:
+    image: cannatracker.azurecr.io/cannatracker-back
     depends_on:
       - redis
     ports:
       - "8000:8000"
     networks:
       - redis-network
+  front:
+    image: cannatracker.azurecr.io/cannatracker-front
+    depends_on:
+      - back
+    ports:
+      - "3000:3000"
   redis:
     image: redis:latest
     restart: always
@@ -14,6 +20,14 @@ services:
       - redis-network
     volumes:
       - redis-volume:/data
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    networks:
+      - redis-network
+    volumes:
+      - redisinsight-volume:/db
 
 
 networks:
@@ -21,3 +35,4 @@ networks:
 
 volumes:
   redis-volume:
+  redisinsight-volume:
