@@ -16,7 +16,7 @@ WORKDIR /app
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONPATH="/app:$PATH"
 
-RUN pip install --no-cache-dir --upgrade "fastapi[standard]"
+RUN pip install "fastapi[standard]" --no-cache-dir --upgrade
 
 EXPOSE 8000
 CMD ["fastapi", "run", "src/main.py", "--port", "8000"]
