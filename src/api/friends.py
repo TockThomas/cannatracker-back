@@ -23,7 +23,7 @@ async def add_friend(
     current_user: Annotated[UserInDB, Depends(get_current_active_user)],
     friends_username: str,
     db: Redis = Depends(redis_connection),
-) -> PublicUser:
+) -> bool:
     return await FriendController.add_friend(db, current_user, friends_username)
 
 

@@ -6,9 +6,10 @@ from src.core.redis_io import Redis
 
 class FriendController:
     @classmethod
-    async def add_friend(cls, db: Redis, current_user: UserInDB, friends_username: str) -> PublicUser:
+    async def add_friend(cls, db: Redis, current_user: UserInDB, friends_username: str) -> bool:
         if friends_username == current_user.username:
-            raise Exception('You cannot add a friend yourself!')
+            return False
+            # raise Exception('You cannot add a friend yourself!')
         all_users = await db.get_all_users()
         for user in all_users:
             if user.username == friends_username:
@@ -19,8 +20,9 @@ class FriendController:
                 ### save in db
                 await db.set_user(current_user)
                 await db.set_user(friend)
-                return await db.get_public_user(friend.id)
-        raise Exception('Friends not found')
+                return True
+        return False
+        # raise Exception('Friends not found')
 
 
     @classmethod

@@ -1,7 +1,7 @@
 from datetime import timezone, datetime
 from typing import List
 
-from src.core.models import ScheduleTemplate, User, UserInDB, CreateScheduleTemplate
+from src.core.models import User, UserInDB, CreateScheduleTemplate, Schedule
 from src.core.redis_io import Redis
 
 
@@ -12,7 +12,7 @@ class ScheduleTemplateController:
         # TODO: create template
 
     @classmethod
-    async def get_templates(cls, db: Redis, current_user: User) -> List[ScheduleTemplate]:
+    async def get_templates(cls, db: Redis, current_user: User) -> List[Schedule]:
         public_template_ids = []
         # TODO: read config from redis
         custom_template_ids = current_user.schedule_templates
@@ -21,12 +21,12 @@ class ScheduleTemplateController:
         return templates
 
     @classmethod
-    async def get_template(cls, db: Redis, current_user: User, template_id: str) -> ScheduleTemplate:
+    async def get_template(cls, db: Redis, current_user: User, template_id: str) -> Schedule:
         template = await db.get_template(template_id)
         return template
 
     @classmethod
-    async def update_template(cls, db: Redis, current_user: User, data: ScheduleTemplate) -> ScheduleTemplate:
+    async def update_template(cls, db: Redis, current_user: User, data: Schedule) -> Schedule:
         template = data
         template.updated_at = datetime.now(timezone.utc)
         await db.set_template(template)

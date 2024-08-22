@@ -52,3 +52,12 @@ async def delete_plant(
         db: Redis = Depends(redis_connection),
 ) -> None:  # TODO: add message
     return await PlantController.delete_plant(db, current_user, plant_id)
+
+
+@router.post("/plants/{plant_id}", tags=["Plants"])
+async def water_plant(
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
+        plant_id: str,
+        db: Redis = Depends(redis_connection),
+) -> bool:
+    return await PlantController.water_plant(db, current_user, plant_id)

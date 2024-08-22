@@ -1,21 +1,18 @@
+import asyncio
 import json
 import logging
 import time
 import traceback
 from datetime import datetime, timezone
 from json import JSONDecodeError
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Union
 
 import redis.asyncio as redis
 
-from src.core.models import UserInDB, Plant, ScheduleTemplate, AbstractPlant, PublicUser
+from src.core.models import UserInDB, Plant, AbstractPlant, PublicUser, Schedule
 
 # redis_connection_pool = redis.ConnectionPool(host="localhost", port=6379, db=0)
 redis_connection_pool = redis.ConnectionPool(host="redis", port=6379, db=0)
-
-
-def redis_connection() -> redis.Redis:
-    return Redis(connection_pool=redis_connection_pool)
 
 
 class Redis:
@@ -23,6 +20,7 @@ class Redis:
     USERS = "users"
     PLANTS = "plants"
     TEMPLATES = "templates"
+    STANDARD_TEMPLATES = ["biobizz-all-mix", "biobizz-light-mix"]
 
     def __init__(self, **kwargs: Any):
         self.logger = logging.getLogger(Redis.__name__)
@@ -48,6 +46,20 @@ class Redis:
                 )
                 time.sleep(10)
 
+    async def init_db(self):
+        for schedule in self.STANDARD_TEMPLATES:
+            await self.create_standard_schedules(schedule)
+        self.logger.info("Redis: standard templates updated")
+
+    async def create_standard_schedules(self, schedule_name: str) -> None:
+        template = await self.get_template(schedule_name)
+        if not template:
+            with open(f"src/core/schedules/{schedule_name}.json", "r") as f:
+                template_model = json.load(f)
+                template = Schedule.model_validate(template_model)
+                await self.set_template(template)
+
+
     def _try_json(self, raw: str) -> dict or None:
         if raw is None:
             return None
@@ -59,17 +71,19 @@ class Redis:
                 res = None
             return res
 
-    def _plant_load_users(self, model: dict) -> dict:
+    async def _plant_load_users(self, model: dict) -> dict:
         """change collaborator list or owner from ids to User objs"""
         # owner
-        owner_id = model.get("owner", {}).get("id")
-        model.update({"owner": owner_id})
+        owner_id = model["owner"]
+        owner = await self.get_public_user(owner_id)
+        model.update({"owner": owner})
         # collaborators
         collaborator_ids = model.get("collaborators", [])
-        collaborators_users = []
+        collaborators = []
         for collaborator_id in collaborator_ids:
-            collaborators_users.append(self.get_user(collaborator_id))
-        model.update({"collaborators": collaborators_users})
+            collaborator = await self.get_public_user(collaborator_id)
+            collaborators.append(collaborator)
+        model.update({"collaborators": collaborators})
         return model
 
     async def get_config(self) -> dict:
@@ -97,14 +111,14 @@ class Redis:
         for plant_id in plant_ids:
             raw = await self.hget(self.PLANTS, plant_id)
             plant = self._try_json(raw)
-            plant = self._plant_load_users(plant)
+            plant = await self._plant_load_users(plant)
             plants.append(Plant.model_validate(plant))
         return plants
 
     async def get_plant(self, plant_id: str) -> Plant:
         raw = await self.hget(self.PLANTS, plant_id)
         model = self._try_json(raw)
-        model = self._plant_load_users(model)
+        model = await self._plant_load_users(model)
         return Plant.model_validate(model)
 
     async def set_plant(self, plant: AbstractPlant) -> None:
@@ -123,21 +137,23 @@ class Redis:
         user_dict.pop("password")
         return PublicUser.model_validate(user_dict)
 
-    async def get_templates(self, template_ids: List[str]) -> List[ScheduleTemplate]:
+    async def get_templates(self, template_ids: List[str]) -> List[Schedule]:
         templates = []
-        for template_id in template_ids:
+        for template_id in template_ids + self.STANDARD_TEMPLATES:
             raw = await self.hget(self.TEMPLATES, template_id)
             template = self._try_json(raw)
-            templates.append(ScheduleTemplate.model_validate(template))
+            templates.append(Schedule.model_validate(template))
         return templates
 
-    async def get_template(self, template_id: str) -> ScheduleTemplate:
+    async def get_template(self, template_id: str) -> Optional[Schedule]:
         raw = await self.hget(self.TEMPLATES, template_id)
         model = self._try_json(raw)
-        return ScheduleTemplate.model_validate(model)
+        if not model:
+            return None
+        return Schedule.model_validate(model)
 
-    async def set_template(self, template: ScheduleTemplate) -> None:
-        model = template.to_db_model()
+    async def set_template(self, template: Schedule) -> None:
+        model = template.model_dump_json()
         await self.hset(self.TEMPLATES, template.id, model)
 
     async def delete_template(self, template_id: str) -> None:
@@ -157,3 +173,7 @@ class Redis:
                 traceback.format_exception(details, limit=3, chain=False)
             )
         await self.sadd("error:reports", json.dumps(report))
+
+
+def redis_connection() -> Redis:
+    return Redis(connection_pool=redis_connection_pool)

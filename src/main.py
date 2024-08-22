@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.api import users, plants, templates, friends
+from src.core.redis_io import Redis, redis_connection
 
 app = FastAPI(title="CannaTracker")
 
@@ -10,6 +11,11 @@ app.include_router(users.router, prefix="/api")
 app.include_router(plants.router, prefix="/api")
 app.include_router(friends.router, prefix="/api")
 app.include_router(templates.router, prefix="/api")
+
+@app.on_event("startup")
+async def startup():
+    redis = redis_connection()
+    await redis.init_db()
 
 
 # CORS

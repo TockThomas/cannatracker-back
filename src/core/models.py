@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional, Literal, Any
 
 from pydantic import BaseModel
@@ -63,9 +63,9 @@ class CreatePlant(BaseModel):
     name: str
     set_watering_period: Optional[int]
     set_watering_amount: Optional[float | int]
-    collaboration: List[str]
-    schedules: List[Schedule]
-    start_date: datetime
+    collaborators: List[str]
+    schedules: str
+    start_date: str
 
 
 class AbstractPlant(BaseModel):
@@ -73,10 +73,10 @@ class AbstractPlant(BaseModel):
     name: str
     set_watering_period: Optional[int]
     set_watering_amount: Optional[float]
-    schedules: List[Schedule]
+    schedule: Schedule
     watering_records: List[WateringRecord]
-    start_date: datetime
-    end_date: datetime
+    start_date: date
+    end_date: date
     created_at: datetime
     updated_at: datetime
     active: bool
@@ -84,12 +84,12 @@ class AbstractPlant(BaseModel):
 
 class PlantInDB(AbstractPlant):
     owner: str
-    collaboration: List[str]
+    collaborators: List[str]
 
 
 class Plant(AbstractPlant):
     owner: PublicUser
-    collaboration: List[PublicUser]
+    collaborators: List[PublicUser]
 
     def to_db_model(self) -> PlantInDB:
         model = self.model_dump()
@@ -102,25 +102,28 @@ class Plant(AbstractPlant):
         return PlantInDB.model_validate(model)
 
 
+class WateringRecord(BaseModel):
+    actor: str # username
+    created_at: datetime
+
+
 class Schedule(BaseModel):
+    id: str
+    name: str
+    grow_stages: List[GrowStage]
+
+
+class GrowStage(BaseModel):
     name: str
     fertilizers: List[Fertilizer]
-
-
-class WateringRecord(BaseModel):
-    actor: PublicUser
-    created_at: datetime
 
 
 class Fertilizer(BaseModel):
     name: str
     color: str
-    amount_by_liter: float
+    amount_per_liter: float
 
 
 class CreateScheduleTemplate(BaseModel):
-    grow_stages: List[Schedule]
-
-
-class ScheduleTemplate(CreateScheduleTemplate):
-    id: str
+    name: str
+    schedules: List[Schedule]

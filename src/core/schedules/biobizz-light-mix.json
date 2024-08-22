@@ -1,0 +1,206 @@
+{
+  "id": "biobizz-light-mix",
+  "name": "BIOBIZZ LIGHT-MIX",
+  "grow_stages": [
+    {
+      "name":"Week 1",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 2
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 2
+        }
+      ]
+    },
+    {
+      "name":"Week 2",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 2
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 2
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 2
+        }
+      ]
+    },
+    {
+      "name":"Week 3",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 3
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 2
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 3
+        }
+      ]
+    },
+    {
+      "name":"Week 4",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 3
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 3
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 4
+        }
+      ]
+    },
+    {
+      "name":"Week 5",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 3
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 1
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 4
+        }
+      ]
+    },
+    {
+      "name":"Week 6",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 5
+        }
+      ]
+    },
+    {
+      "name":"Week 7",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 5
+        }
+      ]
+    },
+    {
+      "name":"Week 8",
+      "fertilizers": [
+        {
+          "name": "BIO GROW",
+          "color": "#1e470a",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO BLOOM",
+          "color": "#cc6623",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "TOP MAX",
+          "color": "#910101",
+          "amount_per_liter": 4
+        },
+        {
+          "name": "BIO HEAVEN",
+          "color": "#14d1db",
+          "amount_per_liter": 5
+        }
+      ]
+    }
+  ]
+}
