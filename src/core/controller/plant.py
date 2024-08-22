@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import List
 
-from src.core.models import CreatePlant, Plant, User, UserInDB, PlantInDB
+from src.core.models import CreatePlant, Plant, UserInDB, PlantInDB
 from src.core.redis_io import Redis
 
 
@@ -34,25 +34,25 @@ class PlantController:
             print(e)
 
     @classmethod
-    async def get_plants(cls, db: Redis, current_user: User) -> List[Plant]:
+    async def get_plants(cls, db: Redis, current_user: UserInDB) -> List[Plant]:
         plant_ids = current_user.plants
         plants = await db.get_plants(plant_ids)
         return plants
 
     @classmethod
-    async def get_plant(cls, db: Redis, current_user: User, plant_id: str) -> Plant:
+    async def get_plant(cls, db: Redis, current_user: UserInDB, plant_id: str) -> Plant:
         plant = await db.get_plant(plant_id)
         return plant
 
     @classmethod
-    async def update_plant(cls, db: Redis, current_user: User, data: Plant) -> Plant:
+    async def update_plant(cls, db: Redis, current_user: UserInDB, data: Plant) -> Plant:
         plant = data
         plant.updated_at = datetime.now(timezone.utc)
         await db.set_plant(plant)
         return plant
 
     @classmethod
-    async def delete_plant(cls, db: Redis, current_user: User, plant_id: str) -> None:  # TODO: Change to SuccessNotification
+    async def delete_plant(cls, db: Redis, current_user: UserInDB, plant_id: str) -> None:  # TODO: Change to SuccessNotification
         if not plant_id in current_user.plants:
             return
         await db.delete_plant(plant_id)

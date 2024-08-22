@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
 
 fake_users_db = {
@@ -31,10 +31,10 @@ fake_users_db = {
 }
 
 
-def get_user(users: dict, username: str):
-    for user in users.values():
-        if user.get("username", "") == username:
-            return UserInDB(**user)
+def get_user(users: dict, username: str) -> Optional[UserInDB]:
+    for user in users:
+        if user.username == username:
+            return UserInDB.model_validate(user)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -65,7 +65,7 @@ def authenticate_user(users, username: str, password: str):
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], db: Redis = Depends(redis_connection)
-) -> User:
+) -> UserInDB:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -86,7 +86,7 @@ async def get_current_user(
     return user
 
 
-async def get_access_token(users: dict, form_data: OAuth2PasswordRequestForm) -> Token:
+async def get_access_token(users: UserInDB, form_data: OAuth2PasswordRequestForm) -> Token:
     user = authenticate_user(users, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -102,7 +102,7 @@ async def get_access_token(users: dict, form_data: OAuth2PasswordRequestForm) ->
 
 
 async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[UserInDB, Depends(get_current_user)]
 ):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")

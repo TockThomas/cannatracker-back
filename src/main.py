@@ -2,11 +2,13 @@ from __future__ import annotations
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.api import users, plants, templates
+from src.api import users, plants, templates, friends
+
 app = FastAPI(title="CannaTracker")
 
 app.include_router(users.router, prefix="/api")
 app.include_router(plants.router, prefix="/api")
+app.include_router(friends.router, prefix="/api")
 app.include_router(templates.router, prefix="/api")
 
 

@@ -8,8 +8,7 @@ from typing import Any, Optional, List
 
 import redis.asyncio as redis
 
-from src.core.controller import user
-from src.core.models import UserInDB, Plant, PlantInDB, ScheduleTemplate, AbstractPlant
+from src.core.models import UserInDB, Plant, ScheduleTemplate, AbstractPlant, PublicUser
 
 # redis_connection_pool = redis.ConnectionPool(host="localhost", port=6379, db=0)
 redis_connection_pool = redis.ConnectionPool(host="redis", port=6379, db=0)
@@ -77,9 +76,14 @@ class Redis:
         raw = await self.get(self.REDIS_MODULE_CONFIG)
         return self._try_json(raw)
 
-    async def get_all_users(self) -> dict:
+    async def get_all_users(self) -> List[UserInDB]:
         raw = await self.hgetall(self.USERS)
-        return {key: self._try_json(value) for key, value in raw.items()}
+        users = []
+        for value in raw.values():
+            model = self._try_json(value.decode("utf-8"))
+            user = UserInDB.model_validate(model)
+            users.append(user)
+        return users
 
     async def get_user(self, user_id: str) -> dict:
         raw = await self.hget(self.USERS, user_id)
@@ -113,6 +117,11 @@ class Redis:
 
     async def delete_plant(self, plant_id: str) -> None:
         await self.hdel(self.PLANTS, plant_id)
+
+    async def get_public_user(self, user_id: str) -> PublicUser:
+        user_dict = await self.get_user(user_id)
+        user_dict.pop("password")
+        return PublicUser.model_validate(user_dict)
 
     async def get_templates(self, template_ids: List[str]) -> List[ScheduleTemplate]:
         templates = []

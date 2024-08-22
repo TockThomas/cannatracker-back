@@ -1,6 +1,5 @@
 import uuid
 from datetime import timezone, datetime
-from typing import Any
 
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
@@ -16,11 +15,11 @@ class UserController:
         cls, db: Redis, username: str, email: str
     ) -> bool:  # TODO: change return from bool to error message
         all_users = await db.get_all_users()
-        for user in all_users.values():
-            if user.get("email", "") == email:
+        for user in all_users:
+            if user.email == email:
                 # TODO: make error response (DuplicateEmail)
                 return True
-            elif user.get("username", "") == username:
+            elif user.username == username:
                 # TODO: make error response (DuplicateUsername)
                 return True
         return False
@@ -40,6 +39,7 @@ class UserController:
             "username": form_data.username,
             "password": password_hashed,
             "plants": [],
+            "friends": [],
             "collaborated_plants": [],
             "schedule_templates": [],
             "created_at": now,

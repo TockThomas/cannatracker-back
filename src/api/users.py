@@ -4,7 +4,7 @@ from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.core.controller.user import UserController
-from src.core.models import User, Token, CreateUser
+from src.core.models import User, Token, CreateUser, UserInDB
 from src.core.redis_io import Redis, redis_connection
 from src.core.security import get_user_info
 
@@ -27,5 +27,5 @@ async def create_user(
 
 
 @router.get("/users/me", tags=["User"])
-async def read_users_me(current_user: Annotated[User, Depends()]):
+async def read_users_me(current_user: Annotated[UserInDB, Depends()]):
     return get_user_info(current_user)

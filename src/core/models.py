@@ -32,6 +32,7 @@ class User(PublicUser):
     first_name: str
     last_name: str
     plants: List[str]
+    friends: List[str]
     collaborated_plants: List[str]
     schedule_templates: List[str]
     created_at: datetime

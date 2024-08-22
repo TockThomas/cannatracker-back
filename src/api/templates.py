@@ -3,7 +3,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends
 
 from src.core.controller.schedule_template import ScheduleTemplateController
-from src.core.models import User, ScheduleTemplate, CreateScheduleTemplate
+from src.core.models import ScheduleTemplate, CreateScheduleTemplate, UserInDB
 from src.core.redis_io import redis_connection, Redis
 from src.core.security import get_current_active_user
 
@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/templates", tags=["ScheduleTemplate"])
 async def get_templates(
-        current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         db: Redis = Depends(redis_connection)
 ) -> List[ScheduleTemplate]:
     return await ScheduleTemplate.get_templates(db, current_user)
@@ -20,7 +20,7 @@ async def get_templates(
 
 @router.get("/templates/{template_id}", tags=["ScheduleTemplate"])
 async def get_template(
-        current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         template_id: str,
         db: Redis = Depends(redis_connection)
 ) -> ScheduleTemplate:
@@ -29,7 +29,7 @@ async def get_template(
 
 @router.put("/templates/{template_id}", tags=["ScheduleTemplate"])
 async def update_template(
-        current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         form_data: ScheduleTemplate,
         db: Redis = Depends(redis_connection)
 ) -> ScheduleTemplate:
@@ -38,7 +38,7 @@ async def update_template(
 
 @router.post("/templates", tags=["ScheduleTemplate"])
 async def create_template(
-        current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         form_data: CreateScheduleTemplate,
         db: Redis = Depends(redis_connection)
 ) -> ScheduleTemplate:
@@ -47,7 +47,7 @@ async def create_template(
 
 @router.delete("/templates/{template_id}", tags=["ScheduleTemplate"])
 async def delete_template(
-        current_user: Annotated[User, Depends(get_current_active_user)],
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         template_id: str,
         db: Redis = Depends(redis_connection)
 ) -> None:  # TODO: add message
