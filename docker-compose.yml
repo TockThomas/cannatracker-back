@@ -13,6 +13,8 @@ services:
       - back
     ports:
       - "3000:3000"
+    environment:
+      - ORIGIN=https://thegreenwizard.live
   redis:
     image: redis:latest
     restart: always
@@ -22,21 +24,19 @@ services:
       - redis-volume:/data
   redisinsight:
     image: redislabs/redisinsight:latest
-    restart: unless-stopped
     ports:
       - '8001:8001'
     networks:
       - redis-network
     volumes:
       - redisinsight-volume:/db
-  portainer:
-    image: portainer/portainer-ce:latest
-    ports:
-      - '9443:9443'
-    volumes:
-      - portainer-volume:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-
+#  portainer:
+#    image: portainer/portainer-ce:latest
+#    ports:
+#      - '9443:9443'
+#    volumes:
+#      - portainer-volume:/data
+#      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   redis-network:
@@ -44,4 +44,4 @@ networks:
 volumes:
   redis-volume:
   redisinsight-volume:
-  portainer-volume:
+#  portainer-volume:

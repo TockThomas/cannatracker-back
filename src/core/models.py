@@ -76,6 +76,7 @@ class AbstractPlant(BaseModel):
     schedule: Schedule
     watering_records: List[WateringRecord]
     start_date: date
+    # flowering_start_date: date
     end_date: date
     created_at: datetime
     updated_at: datetime

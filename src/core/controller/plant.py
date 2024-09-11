@@ -67,13 +67,21 @@ class PlantController:
     async def delete_plant(cls, db: Redis, current_user: UserInDB, plant_id: str) -> None:  # TODO: Change to SuccessNotification
         if not plant_id in current_user.plants:
             return
-        await db.delete_plant(plant_id)
+        plant = await db.get_plant(plant_id)
+        plant_in_db = plant.to_db_model()
         # remove plant_id from User
         model = await db.get_user(current_user.id)
         user_in_db = UserInDB.model_validate(model)
         user_in_db.updated_at = datetime.now(timezone.utc)
         user_in_db.plants.remove(plant_id)
+        # remove plant_id from contributors
+        for collaborator in plant_in_db.collaborators:
+            model = await db.get_user(collaborator)
+            user_in_db = UserInDB.model_validate(model)
+            user_in_db.collaborated_plants.remove(plant_in_db.id)
+            await db.set_user(user_in_db)
         await db.set_user(user_in_db)
+        await db.delete_plant(plant_id)
 
     @classmethod
     async def water_plant(cls, db: Redis, current_user: UserInDB, plant_id: str) -> bool:
