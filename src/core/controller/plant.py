@@ -74,13 +74,13 @@ class PlantController:
         user_in_db = UserInDB.model_validate(model)
         user_in_db.updated_at = datetime.now(timezone.utc)
         user_in_db.plants.remove(plant_id)
+        await db.set_user(user_in_db)
         # remove plant_id from contributors
         for collaborator in plant_in_db.collaborators:
             model = await db.get_user(collaborator)
             user_in_db = UserInDB.model_validate(model)
             user_in_db.collaborated_plants.remove(plant_in_db.id)
             await db.set_user(user_in_db)
-        await db.set_user(user_in_db)
         await db.delete_plant(plant_id)
 
     @classmethod
